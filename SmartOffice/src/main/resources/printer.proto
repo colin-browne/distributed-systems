@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "grpc.examples.printer";
+option java_outer_classname = "PrinterServiceImpl";
+
+service PrinterService{
+
+    rpc listPrinters(AvailabilityRequest) returns (stream AvailabilityResponse) {}
+    
+    rpc printDocument(PrintRequest) returns (PrintResponse ) {}
+    
+    rpc printerStatus (StatusRequest) returns (ReturnMessage ) {}
+
+
+}
+
+
+message AvailabilityRequest {
+	     
+}
+
+
+message AvailabilityResponse {
+	int32 id = 1;
+	string location = 2;
+}
+
+
+
+message PrintRequest {
+	string filename = 1;
+	
+}
+
+
+
+message PrintResponse {
+	string message = 1;
+	
+}
+
+
+message StatusRequest {
+    int32 id = 1;
+    
+}
+
+
+message ReturnMessage {
+	string message = 1;
+	
+}

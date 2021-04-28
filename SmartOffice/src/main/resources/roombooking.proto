@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "grpc.examples.roombooking";
+option java_outer_classname = "RoombookingServiceImpl";
+
+service RoombookingService{
+
+    rpc getAvailableRooms(RoomRequest) returns (stream RoomResponse) {}
+    
+    rpc bookRoom (BookRequest) returns (BookMessage ) {}
+    
+    rpc deleteBooking (DeleteRequest) returns (ReturnMessage ) {}
+
+
+}
+
+
+
+message RoomRequest {
+	int64 date = 1;     //We will store the date as a long. Eg 20210427 = 2021-04-27 = 27 April 2020
+}
+
+
+message RoomResponse {
+	int32 number = 1;
+	int32 time = 2;
+}
+
+
+
+message BookRequest {
+	string username = 1;
+	int64 date = 2;
+	int32 number = 3;
+	int32 time = 4;
+
+}
+
+
+
+message BookMessage {
+	string message = 1;
+	int32 id = 2;
+	
+}
+
+
+message DeleteRequest {
+    string username = 1;
+    int32 id = 2;
+    
+}
+
+
+message ReturnMessage {
+	string message = 1;
+	
+}
+
