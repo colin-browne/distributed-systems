@@ -13,10 +13,10 @@ import grpc.examples.printer.PrinterServiceGrpc.PrinterServiceImplBase;
 
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
+import io.grpc.stub.StreamObserver;
 
 public class PrinterServer extends PrinterServiceImplBase {
-	
-	
+		
 	
 	public static void main(String[] args) throws IOException, InterruptedException {
 		 
@@ -49,20 +49,12 @@ public class PrinterServer extends PrinterServiceImplBase {
 		 } catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-		 }
-
-		 
+		 } 
 	 }
 	
 	
 	
-	
-	
-	
-	
-	
-	
-
+	//get the properties
 	private Properties getProperties() {
 		
 		 Properties prop = null;		
@@ -84,18 +76,13 @@ public class PrinterServer extends PrinterServiceImplBase {
 	        } catch (IOException ex) {
 	            ex.printStackTrace();
 	        }
-	
-		 return prop;
-		 
+		 return prop;	 
 	}
 	
 	
 	
-	
-	
-	
-	
 
+	//register the service
 	private void registerService(Properties prop) {
 		
 		try {
@@ -106,8 +93,6 @@ public class PrinterServer extends PrinterServiceImplBase {
             String service_name = prop.getProperty("service_name")  ;// assigning name of the service
            
             int service_port = Integer.valueOf( prop.getProperty("service_port") );// 50051;
-
-            
             String service_description_properties = prop.getProperty("service_description")  ;
             
             // Register the service
@@ -119,16 +104,85 @@ public class PrinterServer extends PrinterServiceImplBase {
             // Wait for a period
             Thread.sleep(1000);  
 
-            // Unregister all services
-            //jmdns.unregisterAllServices();
 
         } catch (IOException e) {
             System.out.println(e.getMessage());
         } catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-        }
-		
+        }	
 	}
 
+	
+	//List the printers 
+	
+	@Override
+	public void listPrinters(AvailabilityRequest request, StreamObserver<AvailabilityResponse> responseObserver) {
+	    System.out.println("List the available printers");
+	    
+	    responseObserver.onNext(AvailabilityResponse.newBuilder().setId(100).setLocation("Reception").build());
+	    responseObserver.onNext(AvailabilityResponse.newBuilder().setId(101).setLocation("Ground Floor").build());
+	    responseObserver.onNext(AvailabilityResponse.newBuilder().setId(102).setLocation("1st Floor").build());
+	    responseObserver.onNext(AvailabilityResponse.newBuilder().setId(103).setLocation("2nd Floor").build());
+	 
+	    responseObserver.onCompleted();	    
+	}
+	
+	
+	//Print document
+	
+	public void printDocument(PrintRequest request, 
+			StreamObserver<PrintResponse> responseObserver) {
+
+		System.out.println("receiving request to print document " + request.getFilename());		
+		String mes= request.getFilename() + " has been printed successfully";		
+		PrintResponse reply = PrintResponse.newBuilder().setMessage(mes).build();
+
+		responseObserver.onNext(reply);
+
+		responseObserver.onCompleted();
+	}
+	
+
+	
+	
+
+	
+	//status of the printer based on its ID
+	public void printerStatus(StatusRequest request, 
+			StreamObserver<ReturnMessage> responseObserver) {
+
+		System.out.println("receiving request to print document " + request.getId());		
+		int printerID = request.getId();
+		
+		String mes= "Printer ID "+request.getId() + " does not contain sufficient ink levels";
+		String mes1= "Printer ID "+request.getId() + " is available and ready to print";
+		String mes2= "Printer ID "+request.getId() + " is broken. Please try another printer";
+		String mes3= "Printer ID "+request.getId() + " is currently in use";
+		
+			
+		if(printerID==100) {
+			ReturnMessage reply = ReturnMessage.newBuilder().setMessage(mes).build();
+			responseObserver.onNext(reply);
+		}
+		
+		if(printerID==101) {
+			ReturnMessage reply = ReturnMessage.newBuilder().setMessage(mes1).build();
+			responseObserver.onNext(reply);
+		}
+		
+		if(printerID==102) {
+			ReturnMessage reply = ReturnMessage.newBuilder().setMessage(mes2).build();
+			responseObserver.onNext(reply);
+		
+		}
+		
+		if(printerID==103) {
+			ReturnMessage reply = ReturnMessage.newBuilder().setMessage(mes3).build();
+			responseObserver.onNext(reply);
+		}
+		
+
+		responseObserver.onCompleted();
+	}
 }

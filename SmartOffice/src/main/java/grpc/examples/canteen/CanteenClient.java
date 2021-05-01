@@ -34,21 +34,14 @@ public class CanteenClient {
 		
 		//methods
 		
-		//getMenuAsyn();
-		//getMenuBlocking();
-		
-		//orderItems();
-		
+		getMenuAsyn();
+		getMenuBlocking();
+		orderItems();
 		viewOrders();
 		
 		channel.shutdownNow();
 		
-		System.out.println("Finished");
-		
-		
-			
-			
-		
+		System.out.println("Finished");	
 		
 
 	}
@@ -76,8 +69,6 @@ public class CanteenClient {
 		public static void getMenuAsyn() {
 
 			MenuRequest request = MenuRequest.newBuilder().build();
-			
-					
 
 			StreamObserver<MenuResponse> responseObserver = new StreamObserver<MenuResponse>() {
 
@@ -113,22 +104,7 @@ public class CanteenClient {
 
 		}
 
-		
-		
-		
-		
-			
-			
-			
-		
-		
-		
-		
-		
-		
-		
-		
-		
+				
 		
 		
 		//client streaming rpc method
@@ -221,8 +197,6 @@ public class CanteenClient {
 				requestObserver.onNext(OrderMessage.newBuilder().setUsername("Colin97").build());
 				requestObserver.onNext(OrderMessage.newBuilder().setUsername("Patrick123").build());
 				requestObserver.onNext(OrderMessage.newBuilder().setUsername("Grace007").build());
-				
-		
 
 				// Mark the end of requests
 				requestObserver.onCompleted();

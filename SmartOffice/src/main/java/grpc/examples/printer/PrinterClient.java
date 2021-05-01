@@ -11,6 +11,11 @@ import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 
+
+
+
+
+
 public class PrinterClient {
 	
 	
@@ -20,7 +25,7 @@ public class PrinterClient {
 	public static void main(String[] args) throws Exception {
 		
 	ManagedChannel channel = ManagedChannelBuilder
-				.forAddress("localhost", 50051)
+				.forAddress("localhost", 50053)
 				.usePlaintext()
 				.build();
 		
@@ -33,6 +38,8 @@ public class PrinterClient {
 	//methods
 	listPrintersBlocking();
 	listPrintersAsyn();	
+	printDocument();
+	printerStatus();
 	
     
     
@@ -65,9 +72,7 @@ public class PrinterClient {
 		}
 		
 		
-		
-		
-		
+
 		
 		
 				//asyn server-streaming
@@ -111,6 +116,38 @@ public class PrinterClient {
 
 				}
 				
+				
+				
+				
+				//Unary rpc
+				private static void printerStatus() {
+
+					StatusRequest req = StatusRequest.newBuilder().setId(101).build();
+					
+					grpc.examples.printer.ReturnMessage response = blockingStub.printerStatus(req);
+			
+					System.out.println("Message: " + response.getMessage());
+					
+				}
+				
+		
+				
+				
+				//unary rpc method
+				private static void printDocument() {
+
+					PrintRequest req = PrintRequest.newBuilder().setFilename("Distributed Systems ").build();
+
+					PrintResponse response = blockingStub.printDocument(req);
+
+					System.out.println("Message: " + response.getMessage());
+					
+				}
+				
+				
+				
+				
+			
 				
 				
 				

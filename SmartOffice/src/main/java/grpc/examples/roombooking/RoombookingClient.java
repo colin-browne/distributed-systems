@@ -21,7 +21,7 @@ public class RoombookingClient  {
 	public static void main(String[] args) throws Exception {
 		
 	ManagedChannel channel = ManagedChannelBuilder
-				.forAddress("localhost", 50051)
+				.forAddress("localhost", 50052)
 				.usePlaintext()
 				.build();
 		
@@ -33,12 +33,9 @@ public class RoombookingClient  {
 	
 	//methods
 	
-	
-	//getAvailableRoomsAsyn();
-    //getAvailableRoomsBlocking();
-    
-    bookRoom();
-    
+	getAvailableRoomsAsyn();
+    getAvailableRoomsBlocking(); 
+    bookRoom();  
     deleteBooking();
     
     
@@ -62,19 +59,14 @@ public class RoombookingClient  {
 		BookMessage response = blockingStub.bookRoom(req);
 
 		System.out.println("Message: " + response.getMessage() + " BookingId: " + response.getId());
-		
 	}
 	
 	
-	
-	
-	
-	
-	
-	
 
+	
+	
+	//unary prc method
 	private static void deleteBooking() {
-		
 
 		DeleteRequest req = DeleteRequest.newBuilder().setUsername("colin12").setId(1400).build();
 
@@ -105,26 +97,16 @@ public class RoombookingClient  {
 
 		} catch (StatusRuntimeException e) {
 			e.printStackTrace();
-		}
-		
-		
-
-		
+		}		
 	}
 	
 	
-	
-	
-	
-	
 
 	
-
+	//asyn server streaming rpc method
 	private static void getAvailableRoomsAsyn() {
 		
 		RoomRequest request = RoomRequest.newBuilder().build();
-		
-		
 
 		StreamObserver<RoomResponse> responseObserver = new StreamObserver<RoomResponse>() {
 

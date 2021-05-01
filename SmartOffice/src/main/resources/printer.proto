@@ -16,6 +16,8 @@ service PrinterService{
 }
 
 
+
+
 message AvailabilityRequest {
 	     
 }

@@ -54,11 +54,9 @@ public class RoomBookingServer extends RoombookingServiceImplBase {
 		 
 	 }
 	
-	
-	
-	
-	
 
+	
+	//Register the service
 	private void registerService(Properties prop) {
 		
 		 try {
@@ -100,7 +98,7 @@ public class RoomBookingServer extends RoombookingServiceImplBase {
 	
 	
 	
-
+	//Get the properties
 	private Properties getProperties() {
 		
 		
@@ -131,43 +129,38 @@ public class RoomBookingServer extends RoombookingServiceImplBase {
 	
 	
 	
-	
-	
-	
-	
+	//Get the available rooms
 	
 	@Override
 	public void getAvailableRooms(RoomRequest request, StreamObserver<RoomResponse> responseObserver) {
 	    System.out.println("Get the available rooms");
 	    
-	    responseObserver.onNext(RoomResponse.newBuilder().setNumber(3).setTime(1400).build());
-	    responseObserver.onNext(RoomResponse.newBuilder().setNumber(5).setTime(1130).build());
-	    responseObserver.onNext(RoomResponse.newBuilder().setNumber(6).setTime(1030).build());
-	    responseObserver.onNext(RoomResponse.newBuilder().setNumber(8).setTime(1530).build());
-	    responseObserver.onNext(RoomResponse.newBuilder().setNumber(9).setTime(1700).build());
+	    responseObserver.onNext(RoomResponse.newBuilder().setNumber(1).setTime(1030).build());
+	    responseObserver.onNext(RoomResponse.newBuilder().setNumber(1).setTime(1130).build());
+	    responseObserver.onNext(RoomResponse.newBuilder().setNumber(1).setTime(1300).build());
+	    responseObserver.onNext(RoomResponse.newBuilder().setNumber(1).setTime(1530).build());
+	    responseObserver.onNext(RoomResponse.newBuilder().setNumber(1).setTime(1700).build());
+
+	    responseObserver.onNext(RoomResponse.newBuilder().setNumber(2).setTime(1000).build());
+	    responseObserver.onNext(RoomResponse.newBuilder().setNumber(2).setTime(1100).build());
+	    responseObserver.onNext(RoomResponse.newBuilder().setNumber(2).setTime(1430).build());
+	    responseObserver.onNext(RoomResponse.newBuilder().setNumber(2).setTime(1500).build());
+	    responseObserver.onNext(RoomResponse.newBuilder().setNumber(2).setTime(1630).build());
+	    
 	    responseObserver.onCompleted();	    
 
 	}
 	
+
 	
-	
-	
-	
-	
+	//Book a room
 	public void bookRoom(BookRequest request, 
 			StreamObserver<BookMessage> responseObserver) {
 
 		System.out.println("receiving room booking request " + request.getUsername() + " , " + request.getDate() + " , " + request.getNumber() + " , " + request.getTime());
 
-		
-		String mes= " Hello " + request.getUsername() + " , your booking is succesfull ";
-		
 		int bookingID = 000+ request.getTime();
-
-		
-			
-			
-				
+		String mes= " Hello " + request.getUsername() + " , your booking ID is " +bookingID;
 
 		BookMessage reply = BookMessage.newBuilder().setId(bookingID).setMessage(mes).build();
 
@@ -176,23 +169,18 @@ public class RoomBookingServer extends RoombookingServiceImplBase {
 		responseObserver.onCompleted();
 	}
 	
+
 	
 	
 	
 	
-	
-	
-	
+	//Delete the booking
 	public void deleteBooking(DeleteRequest request, 
 			StreamObserver<ReturnMessage> responseObserver) {
 
 		System.out.println("receiving delete room booking request " + request.getUsername() + " , " + request.getId());
 
 		String mes= " Hello " + request.getUsername() + " , your booking has been succesfully deleted ";
-		
-		
-		
-
 		ReturnMessage reply = ReturnMessage.newBuilder().setMessage(mes).build();
 
 		responseObserver.onNext(reply);

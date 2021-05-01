@@ -2,14 +2,13 @@ package grpc.examples.canteen;
 
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
-import io.grpc.Status;
-import io.grpc.StatusRuntimeException;
+
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
-import java.util.ArrayList;
+
 import java.util.Properties;
 
 import javax.jmdns.JmDNS;
@@ -55,17 +54,14 @@ public class CanteenServer extends CanteenServiceImplBase {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 		 }
-
-		 
 	 }
 	 
 	 
 	 
-	 
+	//get the properties
 	 private Properties getProperties() {
 			
-		 Properties prop = null;		
-			
+		 Properties prop = null;			
 		 try (InputStream input = new FileInputStream("src/main/resources/canteen.properties")) {
 
 	            prop = new Properties();
@@ -84,8 +80,7 @@ public class CanteenServer extends CanteenServiceImplBase {
 	            ex.printStackTrace();
 	        }
 	
-		 return prop;
-		 
+		 return prop; 
 	 }
 
 	
@@ -93,7 +88,7 @@ public class CanteenServer extends CanteenServiceImplBase {
 	
 	
 	
-
+	//register the service
 	private void registerService(Properties prop) {
 		
 		 try {
@@ -103,9 +98,7 @@ public class CanteenServer extends CanteenServiceImplBase {
 	            String service_type = prop.getProperty("service_type") ; //assigning type of service
 	            String service_name = prop.getProperty("service_name")  ;// assigning name of the service
 	           
-	            int service_port = Integer.valueOf( prop.getProperty("service_port") );// 50051;
-
-	            
+	            int service_port = Integer.valueOf( prop.getProperty("service_port") );// 50051;      
 	            String service_description_properties = prop.getProperty("service_description")  ;
 	            
 	            // Register the service
@@ -126,29 +119,25 @@ public class CanteenServer extends CanteenServiceImplBase {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 	        }
-		
-		
-		
 	}
 
 
-
-
-
-
+	//Show the menu
 	@Override
 	public void getMenu(MenuRequest request, StreamObserver<MenuResponse> responseObserver) {
 	    System.out.println("Get menu");
 	    
-	    responseObserver.onNext(MenuResponse.newBuilder().setId(1) .setText("PIZZA").setPrice((float) 10.5).build());
-	    responseObserver.onNext(MenuResponse.newBuilder().setId(2) .setText("CURRY").setPrice((float) 20).build());
-	    responseObserver.onNext(MenuResponse.newBuilder().setId(3) .setText("TEA").setPrice((float) 2.5).build());
+	    responseObserver.onNext(MenuResponse.newBuilder().setId(1) .setText("Pizza and chips").setPrice((float) 10.5).build());
+	    responseObserver.onNext(MenuResponse.newBuilder().setId(2) .setText("Chicken curry").setPrice((float) 8.00).build());
+	    responseObserver.onNext(MenuResponse.newBuilder().setId(3) .setText("Spaghetti bolognese").setPrice((float) 11.80).build());
+	    responseObserver.onNext(MenuResponse.newBuilder().setId(4) .setText("Chicken kiev").setPrice((float) 7.50).build());
+	    responseObserver.onNext(MenuResponse.newBuilder().setId(5) .setText("Beef pie").setPrice((float) 9.50).build());
+	    
 	    responseObserver.onCompleted();	    
-
 	}
 	
 	
-
+    //Order items
 	@Override
 	public StreamObserver<OrderRequest> orderItems(StreamObserver<ReturnMessage> responseObserver) {
 		
@@ -156,120 +145,73 @@ public class CanteenServer extends CanteenServiceImplBase {
 			
 			String replyMes ="Order successfull";
 
-			
-
 			@Override
 			public void onNext( OrderRequest request) {
-
 				System.out.println("receiving username "+ request.getUsername() + " recieving quantity " + request.getQuantity() + " recieving menuID " +request.getId()  );
-		           
-
 			}
 
 			@Override
 			public void onError(Throwable t) {
-				
-
 			}
 
 			@Override
 			public void onCompleted() {
 				System.out.printf("Order items method complete \n" );
-
-				
-
 				ReturnMessage reply = ReturnMessage.newBuilder().setMessage(replyMes).build();
-
 				;
 				responseObserver.onNext(reply);
-
 				responseObserver.onCompleted();
-
 			}
-		
-
 		};
 	}
 
-
 	
-		
 	
-
+  //view the orders
   @Override
-
- public StreamObserver<OrderMessage> viewOrders(StreamObserver<OrderResponse> responseObserver) {
-
-               
+  public StreamObserver<OrderMessage> viewOrders(StreamObserver<OrderResponse> responseObserver) {
 
                 return new StreamObserver<OrderMessage>() {
-
-                               
-
+                	
                                @Override
-
                                 public void onNext(OrderMessage msg) {
 
                                                 System.out.println("Server Recvd username " + msg.getUsername());
-
                                                 String user = msg.getUsername();
 
-                                               
+                                                if (user.equals("Colin")) { //display Colins orders
 
-                                                if (user.equals("Colin97")) {
-
-                                                                responseObserver.onNext(OrderResponse.newBuilder().setQuantity(1).setUsername(user).setQuantity(1).build());
-
-                                                                responseObserver.onNext(OrderResponse.newBuilder().setQuantity(1).setUsername(user).setQuantity(2).build());
-
-                                                                responseObserver.onNext(OrderResponse.newBuilder().setQuantity(1).setUsername(user).setQuantity(3).build());                                                                               
-
+                                                                responseObserver.onNext(OrderResponse.newBuilder().setId(1).setUsername(user).setQuantity(12).build());
+                                                                responseObserver.onNext(OrderResponse.newBuilder().setId(2).setUsername(user).setQuantity(6).build());
+                                                                responseObserver.onNext(OrderResponse.newBuilder().setId(3).setUsername(user).setQuantity(15).build());
+                                                                responseObserver.onNext(OrderResponse.newBuilder().setId(4).setUsername(user).setQuantity(0).build()); 
+                                                                responseObserver.onNext(OrderResponse.newBuilder().setId(5).setUsername(user).setQuantity(4).build()); 
                                                 }
 
-                                                if (user.equals("Patrick123")) {
+                                                if (user.equals("Patrick")) { //display Patricks orders
 
-                                                                responseObserver.onNext(OrderResponse.newBuilder().setQuantity(1).setUsername(user).setQuantity(10).build());
-
-                                                                responseObserver.onNext(OrderResponse.newBuilder().setQuantity(1).setUsername(user).setQuantity(11).build());
-
+                                                                responseObserver.onNext(OrderResponse.newBuilder().setId(1).setUsername(user).setQuantity(10).build());
+                                                                responseObserver.onNext(OrderResponse.newBuilder().setId(2).setUsername(user).setQuantity(11).build());
+                                                                responseObserver.onNext(OrderResponse.newBuilder().setId(3).setUsername(user).setQuantity(1).build());
+                                                                responseObserver.onNext(OrderResponse.newBuilder().setId(4).setUsername(user).setQuantity(6).build());
+                                                                responseObserver.onNext(OrderResponse.newBuilder().setId(5).setUsername(user).setQuantity(0).build());
                                                 }
-
-                                                if (user.equals("Grace007")) {
-
-                                                                responseObserver.onNext(OrderResponse.newBuilder().setQuantity(1).setUsername(user).setQuantity(1).build());
-
-                                                }
-
+                                              
                                 }
-
-
-
                                 @Override
-
                                 public void onError(Throwable t) {
 
                                                 t.printStackTrace();
-
                                 }
 
-
-
                                 @Override
-
                                 public void onCompleted() {
 
                           responseObserver.onCompleted();
 
                                 }
-
-                               
-
-                               
-
+                    
                 };
-
-
-
   }
 }
 	
